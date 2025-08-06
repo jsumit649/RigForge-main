@@ -1,0 +1,114 @@
+{% load static %}
+
+<header>
+    <div class="container">
+        <a href="" class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="RigForge" height="60">
+            <span class="logo-text">RigForge</span>
+        </a>
+
+
+        <nav class="header__menu">
+
+            <div class="nav-links">
+                <a href="{% url 'home' %}"  class="nav-link">Home</a>
+                <a href="{% url 'build_pc' %}"  class="nav-link">Build PC</a>
+                <a href="{% url 'components' %}"  class="nav-link">Components</a>
+                <a href="{% url 'about' %}"  class="nav-link">About Us</a>
+                <a href="{% url 'contact' %}"  class="nav-link">Contact</a>
+            </div>
+
+            <!-- user-section -->
+            <div class="user-section">
+                {% if request.user.is_authenticated %}
+                <div class="header__user">
+                    <div class="user-info">
+                        <div class="avatar avatar--medium">
+                            <img src="{% static 'images/avatar.svg' %}" alt="User Avatar" height="40"/>
+                        </div>
+                        <span class="username">{{request.user.username}}</span>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropdown-button">
+                            <svg width="16" height="16" viewBox="0 0 32 32">
+                                <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu">
+                            <!-- <a href="#" class="dropdown-item">Profile</a> -->
+                            <!-- <a href="#" class="dropdown-item">Settings</a> -->
+                            <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'login' %}" class="btn btn-login">
+                        <img src="{% static 'images/avatar.svg' %}" alt="Login" height="40"/>
+                        <span>Login</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>  
+        </nav>
+    </div>
+</header>
+
+
+<style>
+.header__menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header__user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+}
+</style>
