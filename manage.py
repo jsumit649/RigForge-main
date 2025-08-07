@@ -2,6 +2,10 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+# In manage.py
+from django.core.management.commands.runserver import Command as runserver
+
+runserver.default_port = "9000" 
 
 
 def main():
