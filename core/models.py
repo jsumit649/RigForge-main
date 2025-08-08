@@ -112,11 +112,13 @@ class RAM(BaseComponent):
     capacity = models.PositiveIntegerField(help_text="Capacity in GB")
     speed = models.PositiveIntegerField(help_text="Speed in MHz")
 
+
     class Meta:
         verbose_name = 'RAM'
         verbose_name_plural = 'RAMs'
 
 class GPU(BaseComponent):
+    
     VRAM_CHOICES = [
         ('2GB', '2GB'),
         ('4GB', '4GB'),
@@ -148,14 +150,7 @@ class GPU(BaseComponent):
 
 
 class PSU(BaseComponent):
-    POWER_CHOICES = [
-        ('450W', '450W'),
-        ('550W', '550W'),
-        ('650W', '650W'),
-        ('750W', '750W'),
-        ('850W', '850W'),
-        ('1000W', '1000W'),
-    ]
+    
     EFFICIENCY_CHOICES = [
         ("80+", "80 Plus"),
         ("80+ Bronze", "80 Plus Bronze"),
@@ -171,7 +166,7 @@ class PSU(BaseComponent):
         ("Fully-Modular", "Fully Modular"),
     ]
 
-    power_rating = models.CharField(max_length=10, choices=POWER_CHOICES)
+    power_rating = models.PositiveIntegerField(help_text="Power rating in Watts")
     efficiency_rating = models.CharField(max_length=20, choices=EFFICIENCY_CHOICES)
     modularity = models.CharField(max_length=20, choices=MODULAR_CHOICES)
     cables_included = models.BooleanField(default=True)
@@ -234,3 +229,82 @@ class CPUCooler(BaseComponent):
     class Meta:
         verbose_name = 'CPU Cooler'
         verbose_name_plural = 'CPU Coolers'
+
+class PCBuild(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pc_builds')
+    cpu = models.ForeignKey(CPU, on_delete=models.CASCADE)
+    motherboard = models.ForeignKey(Motherboard, on_delete=models.CASCADE)
+    ram = models.ForeignKey(RAM, on_delete=models.CASCADE)
+    gpu = models.ForeignKey(GPU, on_delete=models.CASCADE, null=True, blank=True)
+    psu = models.ForeignKey(PSU, on_delete=models.CASCADE)
+    ssd_storage = models.ForeignKey(SSDStorage, on_delete=models.CASCADE)
+    hdd_storage = models.ForeignKey(HDDStorage, on_delete=models.CASCADE, null=True, blank=True)
+    case = models.ForeignKey(Case, on_delete=models.CASCADE)
+    cpu_cooler = models.ForeignKey(CPUCooler, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'PC Build'
+        verbose_name_plural = 'PC Builds'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"PC Build by {self.user.username} - {self.created_at.strftime('%Y-%m-%d')}"
+    
+    def get_total_price(self):
+
+        total_price = 0
+        components = [
+            self.cpu,
+            self.motherboard,
+            self.ram,
+            self.gpu,
+            self.psu,
+            self.ssd_storage,
+            self.hdd_storage,
+            self.case,
+            self.cpu_cooler
+        ]
+        for component in components:
+            if component:
+                total_price += component.price
+
+        return total_price
+    
+    def check_compatibility(self):
+        
+        issues = []
+
+        if self.cpu and self.motherboard:
+            if self.cpu.socket != self.motherboard.socket:
+                issues.append("CPU and Motherboard socket compatibility issue.")
+            
+        if self.motherboard and self.ram:
+            if self.motherboard.ram_type != self.ram.ram_type:
+                issues.append("Motherboard and RAM type compatibility issue.")
+
+        if self.cpu and self.cpu_cooler:
+            if self.cpu.socket != self.cpu_cooler.socket_compatibility:
+                issues.append("CPU and CPU Cooler socket compatibility issue.")
+
+        if self.gpu and self.case:
+            if self.case.form_factor not in ['ATX', 'Micro-ATX', 'Mini-ITX']:
+                issues.append("Case form factor may not support the GPU size.")
+
+        if self.psu and self.gpu and self.cpu:
+            if self.psu.power_rating < 1.5 * (self.gpu.tdp + self.cpu.tdp):
+                issues.append("PSU power rating may not be sufficient for the GPU.")
+        
+
+        return issues if issues else None
+    
+
+
+
+
+
+            
+
+    

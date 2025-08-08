@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, CPU, GPU, RAM, Motherboard, PSU, SSDStorage, HDDStorage, Case, CPUCooler
+from .models import User, CPU, GPU, RAM, Motherboard, PSU, SSDStorage, HDDStorage, Case, PCBuild, CPUCooler
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -64,3 +64,9 @@ class CPUCoolerAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'cooler_type', 'socket_compatibility', 'created_at', 'updated_at')
     search_fields = ('name', 'cooler_type')
     list_filter = ('cooler_type', 'socket_compatibility', 'created_at', 'updated_at')
+
+
+@admin.register(PCBuild)
+class PCBuildAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cpu', 'motherboard', 'ram', 'gpu', 'psu', 'ssd_storage', 'hdd_storage', 'case', 'cpu_cooler')
+    search_fields = ('id',)
