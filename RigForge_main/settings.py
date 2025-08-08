@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'RigForge_main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rigforge',
+        'USER': 'root',
+        'PASSWORD': 'Noob@2003',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -100,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'core.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
