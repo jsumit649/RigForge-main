@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.views.generic import ListView, DetailView
 
-from .forms import MyUserCreationForm
+from .forms import MyUserCreationForm, PCBuildForm
+from .models import CPU, GPU, Motherboard, RAM, PSU,SSDStorage, HDDStorage, Case, CPUCooler
 
 
 
@@ -16,9 +18,7 @@ def home(request):
     return render(request, 'core/home.html')
 
 
-@login_required(login_url='login')
-def build(request):
-    return render(request, 'core/build.html')
+
 
 
 
@@ -85,6 +85,28 @@ def cart(request):
     # Render the cart page
     return render(request, 'core/cart.html')
 
-    
 
-   
+
+def PCBuildpage(request):
+    if request.method == 'POST':
+        form = PCBuildForm(request.POST)
+        if form.is_valid():
+            pc_build = form.save(commit=False)
+            pc_build.user = request.user
+            # Call the model's check_compatibility method
+            issues = pc_build.check_compatibility()
+            if issues:
+                for issue in issues:
+                    messages.error(request, issue)
+                # Do not save if there are compatibility issues
+            else:
+                pc_build.save()
+                messages.success(request, 'PC Build created successfully!')
+                return redirect('home')
+    else:
+        form = PCBuildForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'core/build.html', context)

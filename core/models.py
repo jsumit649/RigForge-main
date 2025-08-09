@@ -231,16 +231,18 @@ class CPUCooler(BaseComponent):
         verbose_name_plural = 'CPU Coolers'
 
 class PCBuild(models.Model):
+    Name = models.CharField(max_length=200, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pc_builds')
-    cpu = models.ForeignKey(CPU, on_delete=models.CASCADE)
-    motherboard = models.ForeignKey(Motherboard, on_delete=models.CASCADE)
-    ram = models.ForeignKey(RAM, on_delete=models.CASCADE)
-    gpu = models.ForeignKey(GPU, on_delete=models.CASCADE, null=True, blank=True)
-    psu = models.ForeignKey(PSU, on_delete=models.CASCADE)
-    ssd_storage = models.ForeignKey(SSDStorage, on_delete=models.CASCADE)
-    hdd_storage = models.ForeignKey(HDDStorage, on_delete=models.CASCADE, null=True, blank=True)
-    case = models.ForeignKey(Case, on_delete=models.CASCADE)
-    cpu_cooler = models.ForeignKey(CPUCooler, on_delete=models.CASCADE)
+    CPU = models.ForeignKey(CPU, on_delete=models.CASCADE)
+    Motherboard = models.ForeignKey(Motherboard, on_delete=models.CASCADE)
+    RAM = models.ForeignKey(RAM, on_delete=models.CASCADE)
+    GPU = models.ForeignKey(GPU, on_delete=models.CASCADE, null=True, blank=True)
+    PSU = models.ForeignKey(PSU, on_delete=models.CASCADE)
+    SSD_Storage = models.ForeignKey(SSDStorage, on_delete=models.CASCADE)
+    HDD_Storage = models.ForeignKey(HDDStorage, on_delete=models.CASCADE, null=True, blank=True)
+    Case = models.ForeignKey(Case, on_delete=models.CASCADE)
+    CPU_Cooler = models.ForeignKey(CPUCooler, on_delete=models.CASCADE)
+    Total_Price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -250,6 +252,15 @@ class PCBuild(models.Model):
         verbose_name_plural = 'PC Builds'
         ordering = ['-created_at']
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        self.Total_Price = self.get_total_price()
+        super().save(*args, **kwargs)
+        if is_new and not self.Name:
+            self.Name = f"{self.user.username}'s PC Build #{self.pk}"
+            super().save(update_fields=['Name'])
+
+            
     def __str__(self):
         return f"PC Build by {self.user.username} - {self.created_at.strftime('%Y-%m-%d')}"
     
@@ -257,15 +268,15 @@ class PCBuild(models.Model):
 
         total_price = 0
         components = [
-            self.cpu,
-            self.motherboard,
-            self.ram,
-            self.gpu,
-            self.psu,
-            self.ssd_storage,
-            self.hdd_storage,
-            self.case,
-            self.cpu_cooler
+            self.CPU,
+            self.Motherboard,
+            self.RAM,
+            self.GPU,
+            self.PSU,
+            self.SSD_Storage,
+            self.HDD_Storage,
+            self.Case,
+            self.CPU_Cooler
         ]
         for component in components:
             if component:
@@ -273,38 +284,35 @@ class PCBuild(models.Model):
 
         return total_price
     
-    def check_compatibility(self):
-        
+    def check_compatibility(self):  
         issues = []
 
-        if self.cpu and self.motherboard:
-            if self.cpu.socket != self.motherboard.socket:
+        if self.CPU and self.Motherboard:
+            if self.CPU.socket != self.Motherboard.socket:
                 issues.append("CPU and Motherboard socket compatibility issue.")
             
-        if self.motherboard and self.ram:
-            if self.motherboard.ram_type != self.ram.ram_type:
+        if self.Motherboard and self.RAM:
+            if self.Motherboard.ram_type != self.RAM.ram_type:
                 issues.append("Motherboard and RAM type compatibility issue.")
 
-        if self.cpu and self.cpu_cooler:
-            if self.cpu.socket != self.cpu_cooler.socket_compatibility:
+        if self.CPU and self.CPU_Cooler:
+            if self.CPU.socket != self.CPU_Cooler.socket_compatibility:
                 issues.append("CPU and CPU Cooler socket compatibility issue.")
 
-        if self.gpu and self.case:
-            if self.case.form_factor not in ['ATX', 'Micro-ATX', 'Mini-ITX']:
+        if self.GPU and self.Case:
+            if self.Case.form_factor not in ['ATX', 'Micro-ATX', 'Mini-ITX']:
                 issues.append("Case form factor may not support the GPU size.")
 
-        if self.psu and self.gpu and self.cpu:
-            if self.psu.power_rating < 1.5 * (self.gpu.tdp + self.cpu.tdp):
+        if self.PSU and self.GPU and self.CPU:
+            if self.PSU.power_rating < 1.5 * (self.GPU.tdp + self.CPU.tdp):
                 issues.append("PSU power rating may not be sufficient for the GPU.")
         
-
         return issues if issues else None
-    
 
 
 
 
 
-            
 
-    
+
+

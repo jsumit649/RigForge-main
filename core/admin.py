@@ -68,5 +68,5 @@ class CPUCoolerAdmin(admin.ModelAdmin):
 
 @admin.register(PCBuild)
 class PCBuildAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cpu', 'motherboard', 'ram', 'gpu', 'psu', 'ssd_storage', 'hdd_storage', 'case', 'cpu_cooler')
+    list_display = ('Name', 'Total_Price','CPU', 'GPU', 'RAM', 'Motherboard', 'PSU', 'SSD_Storage', 'HDD_Storage', 'Case', 'CPU_Cooler')
     search_fields = ('id',)
