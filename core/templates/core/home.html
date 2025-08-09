@@ -1,6 +1,25 @@
 {% extends 'main.html' %}
 {% block content %}
+<div class="hero" style="padding: 2rem; text-align: center; background: #f5f5f5; margin-bottom: 2rem;">
+    <h1>Welcome to RigForge</h1>
+    <p>Your one-stop solution for building custom PCs. Browse and buy top-quality components or use our PC builder to create your dream setup!</p>
+    <a href="{% url 'build' %}" class="btn btn-primary" style="margin-top: 1rem;">Build PC</a>
+</div>
 
-<h1>Home</h1>
+<!-- Buy Components Section -->
+<div class="buy-components" style="text-align: center;">
+    <h2>Buy Components</h2>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem;">
+        <a href="{% url 'components' %}?type=cpu" class="btn btn-outline-secondary">CPU</a>
+        <a href="{% url 'components' %}?type=gpu" class="btn btn-outline-secondary">GPU</a>
+        <a href="{% url 'components' %}?type=ram" class="btn btn-outline-secondary">RAM</a>
+        <a href="{% url 'components' %}?type=motherboard" class="btn btn-outline-secondary">Motherboard</a>
+        <a href="{% url 'components' %}?type=psu" class="btn btn-outline-secondary">PSU</a>
+        <a href="{% url 'components' %}?type=ssdstorage" class="btn btn-outline-secondary">SSD Storage</a>
+        <a href="{% url 'components' %}?type=hddstorage" class="btn btn-outline-secondary">HDD Storage</a>
+        <a href="{% url 'components' %}?type=case" class="btn btn-outline-secondary">Case</a>
+        <a href="{% url 'components' %}?type=cpucooler" class="btn btn-outline-secondary">CPU Cooler</a>
+    </div>
+</div>
 
 {% endblock content %}

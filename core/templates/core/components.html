@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div style="text-align:center;">
+    <h2>Browse Components</h2>
+    <div id="component-buttons">
+        <button onclick="fetchComponents('cpu')">CPU</button>
+        <button onclick="fetchComponents('gpu')">GPU</button>
+        <button onclick="fetchComponents('ram')">RAM</button>
+        <button onclick="fetchComponents('motherboard')">Motherboard</button>
+        <button onclick="fetchComponents('psu')">PSU</button>
+        <button onclick="fetchComponents('ssdstorage')">SSD Storage</button>
+        <button onclick="fetchComponents('hddstorage')">HDD Storage</button>
+        <button onclick="fetchComponents('case')">Case</button>
+        <button onclick="fetchComponents('cpucooler')">CPU Cooler</button>
+    </div>
+    <div id="components-list" style="margin-top:2rem;"></div>
+</div>
+
+<script>
+function fetchComponents(type) {
+    // Map button type to correct API endpoint
+    const endpointMap = {
+        cpu: 'cpus',
+        gpu: 'gpus',
+        ram: 'ram',
+        motherboard: 'motherboards',
+        psu: 'power-supplies',
+        ssdstorage: 'ssdstorage',
+        hddstorage: 'hddstorage',
+        case: 'cases',
+        cpucooler: 'coolers'
+    };
+    let url = `/api/${endpointMap[type]}/`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let html = '<ul>';
+            data.forEach(item => {
+                html += `<li>
+                    <b>${item.name}</b> - $${item.price}
+                    <button onclick="addToCart('${type}', ${item.id})">Add to Cart</button>
+                </li>`;
+            });
+            html += '</ul>';
+            document.getElementById('components-list').innerHTML = html;
+        });
+}
+
+function addToCart(componentType, objectId) {
+    fetch('/api/add-to-cart/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({component_type: componentType, object_id: objectId})
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Added to cart!');
+    });
+}
+
+// Auto-fetch based on URL parameter
+window.onload = function() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+    if (type) {
+        fetchComponents(type);
+    }
+};
+</script>
+
+{% endblock content %}

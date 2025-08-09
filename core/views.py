@@ -74,17 +74,28 @@ def registerPage(request):
 
 @login_required(login_url='login')
 def cart(request):
-    if request.method == "POST":
-        # Handle cart logic here
-        messages.success(request, 'Item added to cart successfully!')
-        return redirect('cart')
+    user = request.user
+    builds = user.pc_builds.all()
+    cart = getattr(user, 'cart', None)
+    cart_items = cart.items.all() if cart else []
 
-    if request.method == "GET":
-        # Handle displaying cart items
-        messages.info(request, 'Viewing cart items')
-    # Render the cart page
-    return render(request, 'core/cart.html')
+    # Calculate total
+    total = 0
+    for build in builds:
+        total += getattr(build, 'Total_Price', 0)
+    for item in cart_items:
+        total += getattr(item.content_object, 'price', 0)
 
+    context = {
+        'builds': builds,
+        'cart_items': cart_items,
+        'total': total,  # Pass total to template
+    }
+    return render(request, 'core/cart.html', context)
+
+
+def componentspage(request):
+    return render(request, 'core/components.html')
 
 
 def PCBuildpage(request):

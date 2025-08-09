@@ -2,8 +2,57 @@
 
 {% block content %}
 
-<div class="">
-    <h1>Cart Template</h1>
+<div class="cart-container" style="max-width: 400px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 1.5rem;">
+    <h1 style="text-align:center;">Your Cart</h1>
+
+    <!-- Scrollable Cart Items Section -->
+    <div class="cart-items-scroll" style="max-height: 350px; overflow-y: auto; margin-bottom: 1.5rem; border: 1px solid #eee; border-radius: 6px; padding: 1rem;">
+        <!-- PC Builds Section -->
+        {% if builds %}
+            {% for build in builds %}
+                <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
+                    <h3>{{ build.Name }}</h3>
+                    <p><b>Build Price:</b> ₹{{ build.Total_Price }}</p>
+                    <ul style="font-size: 0.95em;">
+                        <li><b>CPU:</b> {{ build.CPU.name }}</li>
+                        <li><b>Motherboard:</b> {{ build.Motherboard.name }}</li>
+                        <li><b>RAM:</b> {{ build.RAM.name }}</li>
+                        <li><b>GPU:</b> {{ build.GPU.name }}</li>
+                        <li><b>PSU:</b> {{ build.PSU.name }}</li>
+                        <li><b>SSD Storage:</b> {{ build.SSD_Storage.name }}</li>
+                        {% if build.HDD_Storage %}
+                        <li><b>HDD Storage:</b> {{ build.HDD_Storage.name }}</li>
+                        {% endif %}
+                        <li><b>Case:</b> {{ build.Case.name }}</li>
+                        <li><b>CPU Cooler:</b> {{ build.CPU_Cooler.name }}</li>
+                    </ul>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Standalone Components Section -->
+        {% if cart_items %}
+            {% for item in cart_items %}
+                <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
+                    <h3>{{ item.content_object.name }}</h3>
+                    <p><b>Price:</b> ₹{{ item.content_object.price }}</p>
+                    <p style="font-size: 0.95em;"><b>Description:</b> {{ item.content_object.description }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not builds and not cart_items %}
+            <p style="text-align:center;">Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+    <!-- Cart Total and Checkout -->
+    <div class="cart-summary" style="text-align:center;">
+        <div style="font-size:1.2em; margin-bottom:1rem;">
+            <b>Total:</b> ₹{{ total }}
+        </div>
+        <button class="btn btn-primary" style="width: 100%;">Checkout</button>
+    </div>
 </div>
 
 {% endblock content %}

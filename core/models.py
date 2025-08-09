@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -308,6 +310,23 @@ class PCBuild(models.Model):
                 issues.append("PSU power rating may not be sufficient for the GPU.")
         
         return issues if issues else None
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Cart"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"CartItem: {self.content_object} in {self.cart}"
 
 
 
