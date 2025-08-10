@@ -139,8 +139,12 @@ def delete_address(request, address_id):
     return redirect('profile')
 
 
-@login_required(login_url='login')
 def cart(request):
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        messages.error(request, 'Log in to view your cart')
+        return redirect('login')
+    
     user = request.user
     builds = user.pc_builds.all()
     cart = getattr(user, 'cart', None)
@@ -168,6 +172,11 @@ def componentspage(request):
 
 
 def PCBuildpage(request):
+    # Check if user is authenticated
+    if not request.user.is_authenticated:
+        messages.error(request, 'Log in to create a build')
+        return redirect('login')
+    
     user = request.user
     if request.method == 'POST':
         form = PCBuildForm(request.POST)
