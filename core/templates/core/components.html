@@ -38,7 +38,7 @@ function fetchComponents(type) {
             let html = '<ul>';
             data.forEach(item => {
                 html += `<li>
-                    <b>${item.name}</b> - $${item.price}
+                    <b>${item.name}</b> - ₹${item.price}
                     <button onclick="addToCart('${type}', ${item.id})">Add to Cart</button>
                 </li>`;
             });

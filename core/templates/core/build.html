@@ -25,6 +25,17 @@
     </div>
 {% endif %}
 
+<!-- Compatibility Issues Alert -->
+{% if compatibility_issues %}
+    <div class="alert alert-danger">
+        <ul>
+        {% for issue in compatibility_issues %}
+            <li>{{ issue }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
 <!-- Build Form -->
 
 <p>Create New Build</p>

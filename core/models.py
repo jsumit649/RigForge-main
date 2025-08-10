@@ -192,8 +192,8 @@ class GPU(BaseComponent):
 
     vram = models.CharField(max_length=5, choices=VRAM_CHOICES)
     memory_type = models.CharField(max_length=10, choices=MEMORY_TYPE_CHOICES)
-    base_clock = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    boost_clock = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    base_clock = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)  # was 4
+    boost_clock = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)  # was 4
     tdp = models.PositiveIntegerField()
 
 
@@ -420,23 +420,33 @@ class PCBuild(models.Model):
 
         if self.CPU and self.Motherboard:
             if self.CPU.socket != self.Motherboard.socket:
-                issues.append("CPU and Motherboard socket compatibility issue.")
+                issues.append(
+                    f"CPU socket ({self.CPU.socket}) does not match Motherboard socket ({self.Motherboard.socket})."
+                )
             
         if self.Motherboard and self.RAM:
             if self.Motherboard.ram_type != self.RAM.ram_type:
-                issues.append("Motherboard and RAM type compatibility issue.")
+                issues.append(
+                    f"Motherboard RAM type ({self.Motherboard.ram_type}) does not match RAM type ({self.RAM.ram_type})."
+                )
 
         if self.CPU and self.CPU_Cooler:
             if self.CPU.socket != self.CPU_Cooler.socket_compatibility:
-                issues.append("CPU and CPU Cooler socket compatibility issue.")
+                issues.append(
+                    f"CPU socket ({self.CPU.socket}) is not compatible with CPU Cooler socket ({self.CPU_Cooler.socket_compatibility})."
+                )
 
         if self.GPU and self.Case:
             if self.Case.form_factor not in ['ATX', 'Micro-ATX', 'Mini-ITX']:
-                issues.append("Case form factor may not support the GPU size.")
+                issues.append(
+                    f"Case form factor ({self.Case.form_factor}) may not support the GPU size."
+                )
 
         if self.PSU and self.GPU and self.CPU:
             if self.PSU.power_rating < 1.5 * (self.GPU.tdp + self.CPU.tdp):
-                issues.append("PSU power rating may not be sufficient for the GPU.")
+                issues.append(
+                    f"PSU power rating ({self.PSU.power_rating}W) may not be sufficient for the GPU ({self.GPU.tdp}W) and CPU ({self.CPU.tdp}W)."
+                )
         
         return issues if issues else None
 

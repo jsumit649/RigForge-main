@@ -1,21 +1,25 @@
-from . import views
 from . import api_views
 from django.urls import path
+from .views import (
+    HomeView, LoginPageView, LogoutUserView, RegisterPageView, EditProfileView,
+    CartView, ComponentsPageView, PCBuildPageView, RemoveBuildView, RemoveFromCartView,
+    EditBuildView, DeleteAddressView, CheckoutView
+)
 
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('build/', views.PCBuildpage, name='build'),
+    path('', HomeView.as_view(), name='home'),
+    path('build/', PCBuildPageView.as_view(), name='build'),
 
 
-    path('login/', views.loginPage, name='login'),
-    path('logout/', views.logoutUser, name='logout'),
-    path('register/', views.registerPage, name='register'),
-    path('profile/', views.editprofile, name='profile'),
+    path('login/', LoginPageView.as_view(), name='login'),
+    path('logout/', LogoutUserView.as_view(), name='logout'),
+    path('register/', RegisterPageView.as_view(), name='register'),
+    path('profile/', EditProfileView.as_view(), name='profile'),
 
-    path('cart/', views.cart, name='cart'),
+    path('cart/', CartView.as_view(), name='cart'),
 
-    path('components/', views.componentspage, name='components'),
+    path('components/', ComponentsPageView.as_view(), name='components'),
 
     path('api/cpus/', api_views.cpu_list, name='api-cpus'),
     path('api/gpus/', api_views.gpu_list, name='api-gpus'),
@@ -28,11 +32,11 @@ urlpatterns = [
     path('api/coolers/', api_views.cpu_cooler_list, name='api-coolers'),
     path('api/add-to-cart/', api_views.add_to_cart, name='api-add-to-cart'),
 
-    path('cart/remove-build/<int:build_id>/', views.remove_build, name='remove-build'),
-    path('cart/remove-item/<int:item_id>/', views.remove_from_cart, name='remove-from-cart'),
-    path('build/edit/<int:build_id>/', views.edit_build, name='edit-build'),
+    path('cart/remove-build/<int:build_id>/', RemoveBuildView.as_view(), name='remove-build'),
+    path('cart/remove-item/<int:item_id>/', RemoveFromCartView.as_view(), name='remove-from-cart'),
+    path('build/edit/<int:build_id>/', EditBuildView.as_view(), name='edit-build'),
 
-    path('address/delete/<int:address_id>/', views.delete_address, name='delete-address'),
+    path('address/delete/<int:address_id>/', DeleteAddressView.as_view(), name='delete-address'),
 
-    path('checkout/', views.checkout, name='checkout'),
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
 ]
