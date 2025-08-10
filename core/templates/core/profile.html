@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="profile-container" style="max-width: 400px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 1.5rem;">
+    <h1 style="text-align:center;">Profile</h1>
+    
+    <div class="profile-info" style="margin-bottom: 1.5rem;">
+        <p><b>Username:</b> {{ user.username }}</p>
+        <p><b>Email:</b> {{ user.email }}</p>
+    </div>
+
+   
+{% endblock content %}

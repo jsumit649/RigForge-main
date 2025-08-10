@@ -25,7 +25,9 @@
                         <div class="avatar avatar--medium">
                             <img src="{% static 'images/avatar.svg' %}" alt="User Avatar" height="40"/>
                         </div>
-                        <span class="username">{{request.user.username}}</span>
+                        <span class="username" >
+                            <a href="{% url 'profile' %}">{{request.user.username}}</a>
+                        </span>
                     </div>
                     <a href="{% url 'logout' %}" class="logout-button" title="Logout">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

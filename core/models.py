@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django import forms
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -62,6 +63,11 @@ class BaseComponent(models.Model):
     
 
 class CPU(BaseComponent):
+    BRAND_CHOICES = [
+        ('Intel', 'Intel'),
+        ('AMD', 'AMD'),
+    ]
+    brand = models.CharField(max_length=20, choices=BRAND_CHOICES, null=True)
     SOCKET_CHOICES = [
         ('AM4', 'AM4'),
         ('AM5', 'AM5'),
@@ -84,6 +90,18 @@ class CPU(BaseComponent):
 
 
 class Motherboard(BaseComponent):
+    BRAND_CHOICES = [
+        ('ASUS', 'ASUS'),
+        ('MSI', 'MSI'),
+        ('Gigabyte', 'Gigabyte'),
+        ('ASRock', 'ASRock'),
+        ('Biostar', 'Biostar'),
+        ('EVGA', 'EVGA'),
+        ('NZXT', 'NZXT'),
+        ('Colorful', 'Colorful'),
+        ('Supermicro', 'Supermicro'),
+    ]
+    brand = models.CharField(max_length=20, choices=BRAND_CHOICES, null=True)
     SOCKET_CHOICES = CPU.SOCKET_CHOICES
 
     FORM_FACTOR_CHOICES = [
@@ -108,6 +126,20 @@ class Motherboard(BaseComponent):
         verbose_name_plural = 'Motherboards'
 
 class RAM(BaseComponent):
+    BRAND_CHOICES = [
+        ('Corsair', 'Corsair'),
+        ('G.Skill', 'G.Skill'),
+        ('Kingston', 'Kingston'),
+        ('Crucial', 'Crucial'),
+        ('ADATA', 'ADATA'),
+        ('TeamGroup', 'TeamGroup'),
+        ('Patriot', 'Patriot'),
+        ('Samsung', 'Samsung'),
+        ('HyperX', 'HyperX'),
+        ('PNY', 'PNY'),
+        ('Transcend', 'Transcend'),
+    ]
+    brand = models.CharField(max_length=20, choices=BRAND_CHOICES, null=True)
     RAM_TYPE_CHOICES = Motherboard.RAM_SLOTS_CHOICES
 
     ram_type = models.CharField(max_length=10, choices=RAM_TYPE_CHOICES)
@@ -120,6 +152,25 @@ class RAM(BaseComponent):
         verbose_name_plural = 'RAMs'
 
 class GPU(BaseComponent):
+    BRAND_CHOICES = [
+        ('NVIDIA', 'NVIDIA'),
+        ('AMD', 'AMD'),
+        ('Intel', 'Intel'),
+        ('ASUS', 'ASUS'),
+        ('MSI', 'MSI'),
+        ('Gigabyte', 'Gigabyte'),
+        ('ZOTAC', 'ZOTAC'),
+        ('EVGA', 'EVGA'),
+        ('Sapphire', 'Sapphire'),
+        ('PowerColor', 'PowerColor'),
+        ('GALAX', 'GALAX'),
+        ('PNY', 'PNY'),
+        ('XFX', 'XFX'),
+        ('Inno3D', 'Inno3D'),
+        ('Palit', 'Palit'),
+        ('Colorful', 'Colorful'),
+    ]
+    brand = models.CharField(max_length=20, choices=BRAND_CHOICES, null=True)
     
     VRAM_CHOICES = [
         ('2GB', '2GB'),
@@ -152,6 +203,22 @@ class GPU(BaseComponent):
 
 
 class PSU(BaseComponent):
+    BRAND_CHOICES = [
+        ('Corsair', 'Corsair'),
+        ('EVGA', 'EVGA'),
+        ('Seasonic', 'Seasonic'),
+        ('Cooler Master', 'Cooler Master'),
+        ('Antec', 'Antec'),
+        ('Thermaltake', 'Thermaltake'),
+        ('SilverStone', 'SilverStone'),
+        ('NZXT', 'NZXT'),
+        ('be quiet!', 'be quiet!'),
+        ('ASUS', 'ASUS'),
+        ('Gigabyte', 'Gigabyte'),
+        ('MSI', 'MSI'),
+        ('FSP', 'FSP'),
+    ]
+    brand = models.CharField(max_length=20, choices=BRAND_CHOICES, null=True)
     
     EFFICIENCY_CHOICES = [
         ("80+", "80 Plus"),
@@ -179,6 +246,22 @@ class PSU(BaseComponent):
 
 
 class SSDStorage(BaseComponent):
+    BRAND_CHOICES = [
+        ('Samsung', 'Samsung'),
+        ('Western Digital', 'Western Digital'),
+        ('Crucial', 'Crucial'),
+        ('Kingston', 'Kingston'),
+        ('ADATA', 'ADATA'),
+        ('Seagate', 'Seagate'),
+        ('Corsair', 'Corsair'),
+        ('SanDisk', 'SanDisk'),
+        ('Transcend', 'Transcend'),
+        ('PNY', 'PNY'),
+        ('Intel', 'Intel'),
+        ('SK hynix', 'SK hynix'),
+        ('TeamGroup', 'TeamGroup'),
+    ]
+    brand = models.CharField(max_length=30, choices=BRAND_CHOICES, null=True)
     
     PCIE_GENERATIONS = [
         ('Gen3', 'PCIe Gen 3'),
@@ -196,6 +279,17 @@ class SSDStorage(BaseComponent):
         verbose_name_plural = 'SSD Storages'
     
 class HDDStorage(BaseComponent):
+    BRAND_CHOICES = [
+        ('Western Digital', 'Western Digital'),
+        ('Seagate', 'Seagate'),
+        ('Toshiba', 'Toshiba'),
+        ('Hitachi', 'Hitachi'),
+        ('Samsung', 'Samsung'),
+        ('HGST', 'HGST'),
+        ('Fujitsu', 'Fujitsu'),
+        ('Maxtor', 'Maxtor'),
+    ]
+    brand = models.CharField(max_length=30, choices=BRAND_CHOICES, null=True)
     capacity = models.PositiveIntegerField(help_text="Capacity in GB")
     rpm = models.PositiveIntegerField(help_text="Revolutions Per Minute (RPM)")
     
@@ -204,6 +298,23 @@ class HDDStorage(BaseComponent):
         verbose_name_plural = 'HDD Storages'
 
 class Case(BaseComponent):
+    BRAND_CHOICES = [
+        ('Corsair', 'Corsair'),
+        ('NZXT', 'NZXT'),
+        ('Cooler Master', 'Cooler Master'),
+        ('Thermaltake', 'Thermaltake'),
+        ('Phanteks', 'Phanteks'),
+        ('Fractal Design', 'Fractal Design'),
+        ('Lian Li', 'Lian Li'),
+        ('Antec', 'Antec'),
+        ('be quiet!', 'be quiet!'),
+        ('SilverStone', 'SilverStone'),
+        ('Deepcool', 'Deepcool'),
+        ('MSI', 'MSI'),
+        ('ASUS', 'ASUS'),
+        ('Gigabyte', 'Gigabyte'),
+    ]
+    brand = models.CharField(max_length=30, choices=BRAND_CHOICES, null=True)
     FORM_FACTOR_CHOICES = Motherboard.FORM_FACTOR_CHOICES
 
     form_factor = models.CharField(max_length=20, choices=FORM_FACTOR_CHOICES)
@@ -218,6 +329,24 @@ class Case(BaseComponent):
 
 
 class CPUCooler(BaseComponent):
+    BRAND_CHOICES = [
+        ('Cooler Master', 'Cooler Master'),
+        ('Noctua', 'Noctua'),
+        ('Corsair', 'Corsair'),
+        ('be quiet!', 'be quiet!'),
+        ('NZXT', 'NZXT'),
+        ('Deepcool', 'Deepcool'),
+        ('Thermaltake', 'Thermaltake'),
+        ('Arctic', 'Arctic'),
+        ('Cryorig', 'Cryorig'),
+        ('Scythe', 'Scythe'),
+        ('Phanteks', 'Phanteks'),
+        ('Fractal Design', 'Fractal Design'),
+        ('SilverStone', 'SilverStone'),
+        ('MSI', 'MSI'),
+        ('ASUS', 'ASUS'),
+    ]
+    brand = models.CharField(max_length=30, choices=BRAND_CHOICES, null=True)
     COOLER_TYPE_CHOICES = [
         ('Air', 'Air Cooler'),
         ('Liquid', 'Liquid Cooler'),
@@ -327,6 +456,9 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"CartItem: {self.content_object} in {self.cart}"
+    
+
+
 
 
 

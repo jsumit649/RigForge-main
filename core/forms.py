@@ -4,10 +4,14 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, PCBuild
 from django import forms
 from django.forms import ModelForm
+from django import forms
+
+
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['name', 'username', 'email', 'password1', 'password2']
+        fields = [ 'username', 'email', 'password1', 'password2']
+        
 
 
 class PCBuildForm(forms.ModelForm):

@@ -10,6 +10,9 @@ urlpatterns = [
 
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
+    path('register/', views.registerPage, name='register'),
+    path('profile/', views.editprofile, name='profile'),
+
     path('cart/', views.cart, name='cart'),
 
     path('components/', views.componentspage, name='components'),
@@ -24,4 +27,8 @@ urlpatterns = [
     path('api/cases/', api_views.case_list, name='api-cases'),
     path('api/coolers/', api_views.cpu_cooler_list, name='api-coolers'),
     path('api/add-to-cart/', api_views.add_to_cart, name='api-add-to-cart'),
+
+    path('cart/remove-build/<int:build_id>/', views.remove_build, name='remove-build'),
+    path('cart/remove-item/<int:item_id>/', views.remove_from_cart, name='remove-from-cart'),
+    path('build/edit/<int:build_id>/', views.edit_build, name='edit-build'),
 ]

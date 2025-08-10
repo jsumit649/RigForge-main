@@ -13,6 +13,10 @@
                 <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
                     <h3>{{ build.Name }}</h3>
                     <p><b>Build Price:</b> ₹{{ build.Total_Price }}</p>
+                    <form method="post" action="{% url 'remove-build' build.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Remove Build</button>
+                    </form>
                     <ul style="font-size: 0.95em;">
                         <li><b>CPU:</b> {{ build.CPU.name }}</li>
                         <li><b>Motherboard:</b> {{ build.Motherboard.name }}</li>
@@ -36,6 +40,10 @@
                 <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
                     <h3>{{ item.content_object.name }}</h3>
                     <p><b>Price:</b> ₹{{ item.content_object.price }}</p>
+                    <form method="post" action="{% url 'remove-from-cart' item.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Remove from Cart</button>
+                    </form>
                     <p style="font-size: 0.95em;"><b>Description:</b> {{ item.content_object.description }}</p>
                 </div>
             {% endfor %}

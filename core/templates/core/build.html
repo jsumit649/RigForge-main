@@ -2,13 +2,41 @@
 
 {% block content %}
 
-<h1>Build Pc Template</h1>
+<h1>{% if edit_mode %}Edit PC Build{% else %}Build PC Template{% endif %}</h1>
 
+<!-- Existing Builds List -->
+{% if builds %}
+    <div style="margin-bottom:2rem;">
+        <h2>Your Builds</h2>
+        <ul>
+        {% for build in builds %}
+            <li style="margin-bottom:1rem;">
+                <b>{{ build.Name }}</b> - ₹{{ build.Total_Price }}
+                <form method="post" action="{% url 'remove-build' build.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Remove</button>
+                </form>
+                <a href="{% url 'edit-build' build.id %}" style="margin-left:10px;">
+                    <button type="button" {% if edit_mode and edit_build_id == build.id %}disabled{% endif %}>Edit</button>
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<!-- Build Form -->
+
+<p>Create New Build</p>
 <form method="POST" action="">
     {% csrf_token %}
     {{ form.as_p }}
-    
-    <button type="submit" class="btn btn-primary">Create PC Build</button>
+    <button type="submit" class="btn btn-primary">
+        {% if edit_mode %}Update PC Build{% else %}Create PC Build{% endif %}
+    </button>
+    {% if edit_mode %}
+        <a href="{% url 'build' %}" style="margin-left:10px;">Cancel</a>
+    {% endif %}
 </form>
 
 {% endblock content %}
