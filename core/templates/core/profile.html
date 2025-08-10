@@ -1,75 +1,52 @@
 {% extends 'main.html' %}
 {% block content %}
 
-<div class="profile-container" style="max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 1.5rem;">
-    <h1 style="text-align:center;">Profile</h1>
-    
-    <!-- Profile Details -->
-    <div>
-        <strong>Name:</strong> {{ user.name }}<br>
-        <strong>Email:</strong> {{ user.email }}<br>
-        <strong>Bio:</strong> {{ user.bio|default:"-" }}<br>
-        <button onclick="toggleForm('edit-profile-form')">Edit Profile</button>
-    </div>
-    
-    <!-- Edit Profile Form (hidden by default) -->
-    <div id="edit-profile-form" style="display:none; margin-top:1rem;">
-        <form method="post">
-            {% csrf_token %}
-            {{ profile_form.as_p }}
-            <button type="submit" name="profile_submit">Update Profile</button>
-            <button type="button" onclick="toggleForm('edit-profile-form')">Cancel</button>
-        </form>
-    </div>
-
-    <!-- Change Password Section -->
-    <button onclick="toggleForm('change-password-form')">Change Password</button>
-
-    <div id="change-password-form" style="display:none; margin-top:1rem;">
-        <form method="post">
-            {% csrf_token %}
-            {{ password_form.as_p }}
-            <button type="submit" name="password_submit">Change Password</button>
-            <button type="button" onclick="toggleForm('change-password-form')">Cancel</button>
-        </form>
-    </div>
-    
-    <hr>
-    <h2>Your Addresses</h2>
-    <ul>
-        {% for address in addresses %}
-            <li>
-                {{ address.line1 }}, {{ address.line2 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
-                <form method="post" action="{% url 'delete-address' address.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        {% empty %}
-            <li>No addresses yet.</li>
-        {% endfor %}
-    </ul>
-    <button onclick="toggleForm('add-address-form')">Add Address</button>
-    
-    <!-- Add Address Form (hidden by default) -->
-    <div id="add-address-form" style="display:none; margin-top:1rem;">
-        <form method="post">
-            {% csrf_token %}
-            {{ address_form.as_p }}
-            <button type="submit" name="address_submit">Add Address</button>
-            <button type="button" onclick="toggleForm('add-address-form')">Cancel</button>
-        </form>
-    </div>
+<div class="profile-container">
+  <h1 class="profile-title">Profile</h1>
+  <div class="profile-details">
+    <strong>Name:</strong> {{ user.name }}<br />
+    <strong>Email:</strong> {{ user.email }}<br />
+    <strong>Bio:</strong> {{ user.bio|default:"-" }}<br />
+    <button class="profile-edit-btn" data-toggle="edit-profile-form">Edit Profile</button>
+  </div>
+  <div id="edit-profile-form" class="profile-edit-form">
+    <form method="post" class="profile-edit-form-inner">
+      {% csrf_token %} {{ profile_form.as_p }}
+      <button type="submit" name="profile_submit" class="profile-update-btn">Update Profile</button>
+      <button type="button" class="profile-cancel-btn" data-toggle="edit-profile-form">Cancel</button>
+    </form>
+  </div>
+  <button class="profile-change-password-btn" data-toggle="change-password-form">Change Password</button>
+  <div id="change-password-form" class="profile-change-password-form">
+    <form method="post" class="profile-change-password-form-inner">
+      {% csrf_token %} {{ password_form.as_p }}
+      <button type="submit" name="password_submit" class="profile-password-update-btn">Change Password</button>
+      <button type="button" class="profile-password-cancel-btn" data-toggle="change-password-form">Cancel</button>
+    </form>
+  </div>
+  <hr class="profile-divider" />
+  <h2 class="profile-addresses-title">Your Addresses</h2>
+  <ul class="profile-addresses-list">
+    {% for address in addresses %}
+    <li class="profile-address-item">
+      {{ address.line1 }}, {{ address.line2 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
+      <form method="post" action="{% url 'delete-address' address.id %}" class="profile-address-delete-form">
+        {% csrf_token %}
+        <button type="submit" class="profile-address-delete-btn">Delete</button>
+      </form>
+    </li>
+    {% empty %}
+    <li class="profile-no-address">No addresses yet.</li>
+    {% endfor %}
+  </ul>
+  <button class="profile-add-address-btn" data-toggle="add-address-form">Add Address</button>
+  <div id="add-address-form" class="profile-add-address-form">
+    <form method="post" class="profile-add-address-form-inner">
+      {% csrf_token %} {{ address_form.as_p }}
+      <button type="submit" name="address_submit" class="profile-address-add-btn">Add Address</button>
+      <button type="button" class="profile-address-cancel-btn" data-toggle="add-address-form">Cancel</button>
+    </form>
+  </div>
 </div>
 
-<script>
-function toggleForm(id) {
-    var el = document.getElementById(id);
-    if (el.style.display === "none" || el.style.display === "") {
-        el.style.display = "block";
-    } else {
-        el.style.display = "none";
-    }
-}
-</script>
 {% endblock content %}

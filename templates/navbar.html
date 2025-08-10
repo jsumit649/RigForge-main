@@ -1,36 +1,30 @@
 {% load static %}
 
-<header>
-    <div class="container">
-        <a href="{% url 'home' %}" class="logo">
-            <img src="{% static 'images/logo.png' %}" alt="RigForge" height="60">
-            <span class="logo-text"></span>
+<header class="navbar-header">
+    <div class="navbar-container">
+        <a href="{% url 'home' %}" class="navbar-logo">
+            <img src="{% static 'images/logo.png' %}" alt="RigForge" class="navbar-logo-img">
+            <span class="navbar-logo-text"></span>
         </a>
-
-
-        <nav class="header__menu">
-
-            <div class="nav-links">
-                <a href="{% url 'home' %}"  class="nav-link">Home</a>
-                <a href="{% url 'build' %}"  class="nav-link">Build</a>
-                <a href="{% url 'cart' %}" class="nav-link">Cart</a>
-                
+        <nav class="navbar-menu">
+            <div class="navbar-links">
+                <a href="{% url 'home' %}" class="navbar-link">Home</a>
+                <a href="{% url 'build' %}" class="navbar-link">Build</a>
+                <a href="{% url 'cart' %}" class="navbar-link">Cart</a>
             </div>
-
-            <!-- user-section -->
-            <div class="user-section">
+            <div class="navbar-user-section">
                 {% if request.user.is_authenticated %}
-                <div class="header__user">
-                    <div class="user-info">
-                        <div class="avatar avatar--medium">
-                            <img src="{% static 'images/avatar.svg' %}" alt="User Avatar" height="40"/>
+                <div class="navbar-user">
+                    <div class="navbar-user-info">
+                        <div class="navbar-avatar">
+                            <img src="{% static 'images/avatar.svg' %}" alt="User Avatar" class="navbar-avatar-img"/>
                         </div>
-                        <span class="username" >
+                        <span class="navbar-username">
                             <a href="{% url 'profile' %}">{{request.user.username}}</a>
                         </span>
                     </div>
-                    <a href="{% url 'logout' %}" class="logout-button" title="Logout">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <a href="{% url 'logout' %}" class="navbar-logout-btn" title="Logout">
+                        <svg class="navbar-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                             <polyline points="16,17 21,12 16,7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -38,73 +32,16 @@
                     </a>
                 </div>
                 {% else %}
-                <div class="auth-buttons">
-                    <a href="{% url 'login' %}" class="btn btn-login">
-                        <img src="{% static 'images/avatar.svg' %}" alt="Login" height="40"/>
-                        <span>Login</span>
+                <div class="navbar-auth-buttons">
+                    <a href="{% url 'login' %}" class="navbar-login-btn">
+                        <img src="{% static 'images/avatar.svg' %}" alt="Login" class="navbar-login-img"/>
+                        <span class="navbar-login-text">Login</span>
                     </a>
                 </div>
                 {% endif %}
-            </div>  
+            </div>
         </nav>
     </div>
 </header>
 
 
-<style>
-.header__menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nav-links {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.nav-link {
-    text-decoration: none;
-    color: #000000;
-    font-size: 16px;
-}
-
-.user-section {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.header__user {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.auth-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 10px;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000000;
-    text-decoration: none;
-}
-</style>

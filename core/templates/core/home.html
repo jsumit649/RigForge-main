@@ -1,25 +1,22 @@
 {% extends 'main.html' %}
 {% block content %}
-<div class="hero" style="padding: 2rem; text-align: center; background: #f5f5f5; margin-bottom: 2rem;">
-    <h1>Welcome to RigForge Website</h1>
-    <p>Your one-stop solution for building custom PCs. Browse and buy top-quality components or use our PC builder to create your dream setup!</p>
-    <a href="{% url 'build' %}" class="btn btn-primary" style="margin-top: 1rem;">Build PC</a>
+<div class="home-hero">
+    <h1 class="home-title">Welcome to RigForge Website</h1>
+    <p class="home-description">Your one-stop solution for building custom PCs. Browse and buy top-quality components or use our PC builder to create your dream setup!</p>
+    <a href="{% url 'build' %}" class="home-build-btn">Build PC</a>
 </div>
-
-<!-- Buy Components Section -->
-<div class="buy-components" style="text-align: center;">
-    <h2>Buy Components</h2>
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1rem;">
-        <a href="{% url 'components' %}?type=cpu" class="btn btn-outline-secondary">CPU</a>
-        <a href="{% url 'components' %}?type=gpu" class="btn btn-outline-secondary">GPU</a>
-        <a href="{% url 'components' %}?type=ram" class="btn btn-outline-secondary">RAM</a>
-        <a href="{% url 'components' %}?type=motherboard" class="btn btn-outline-secondary">Motherboard</a>
-        <a href="{% url 'components' %}?type=psu" class="btn btn-outline-secondary">PSU</a>
-        <a href="{% url 'components' %}?type=ssdstorage" class="btn btn-outline-secondary">SSD Storage</a>
-        <a href="{% url 'components' %}?type=hddstorage" class="btn btn-outline-secondary">HDD Storage</a>
-        <a href="{% url 'components' %}?type=case" class="btn btn-outline-secondary">Case</a>
-        <a href="{% url 'components' %}?type=cpucooler" class="btn btn-outline-secondary">CPU Cooler</a>
+<div class="home-buy-components">
+    <h2 class="home-components-title">Buy Components</h2>
+    <div class="home-components-list">
+        <a href="{% url 'components' %}?type=cpu" class="home-component-btn">CPU</a>
+        <a href="{% url 'components' %}?type=gpu" class="home-component-btn">GPU</a>
+        <a href="{% url 'components' %}?type=ram" class="home-component-btn">RAM</a>
+        <a href="{% url 'components' %}?type=motherboard" class="home-component-btn">Motherboard</a>
+        <a href="{% url 'components' %}?type=psu" class="home-component-btn">PSU</a>
+        <a href="{% url 'components' %}?type=ssdstorage" class="home-component-btn">SSD Storage</a>
+        <a href="{% url 'components' %}?type=hddstorage" class="home-component-btn">HDD Storage</a>
+        <a href="{% url 'components' %}?type=case" class="home-component-btn">Case</a>
+        <a href="{% url 'components' %}?type=cpucooler" class="home-component-btn">CPU Cooler</a>
     </div>
 </div>
-
 {% endblock content %}

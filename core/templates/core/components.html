@@ -1,20 +1,20 @@
 {% extends 'main.html' %}
 {% block content %}
 
-<div style="text-align:center;">
-    <h2>Browse Components</h2>
-    <div id="component-buttons">
-        <button onclick="fetchComponents('cpu')">CPU</button>
-        <button onclick="fetchComponents('gpu')">GPU</button>
-        <button onclick="fetchComponents('ram')">RAM</button>
-        <button onclick="fetchComponents('motherboard')">Motherboard</button>
-        <button onclick="fetchComponents('psu')">PSU</button>
-        <button onclick="fetchComponents('ssdstorage')">SSD Storage</button>
-        <button onclick="fetchComponents('hddstorage')">HDD Storage</button>
-        <button onclick="fetchComponents('case')">Case</button>
-        <button onclick="fetchComponents('cpucooler')">CPU Cooler</button>
-    </div>
-    <div id="components-list" style="margin-top:2rem;"></div>
+<div class="components-container">
+  <h2 class="components-title">Browse Components</h2>
+  <div class="components-buttons" id="component-buttons">
+    <button class="components-btn" data-type="cpu">CPU</button>
+    <button class="components-btn" data-type="gpu">GPU</button>
+    <button class="components-btn" data-type="ram">RAM</button>
+    <button class="components-btn" data-type="motherboard">Motherboard</button>
+    <button class="components-btn" data-type="psu">PSU</button>
+    <button class="components-btn" data-type="ssdstorage">SSD Storage</button>
+    <button class="components-btn" data-type="hddstorage">HDD Storage</button>
+    <button class="components-btn" data-type="case">Case</button>
+    <button class="components-btn" data-type="cpucooler">CPU Cooler</button>
+  </div>
+  <div class="components-list" id="components-list"></div>
 </div>
 
 <script>
@@ -69,6 +69,12 @@ window.onload = function() {
     if (type) {
         fetchComponents(type);
     }
+    // Add event listeners to component buttons
+    document.querySelectorAll('.components-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            fetchComponents(this.getAttribute('data-type'));
+        });
+    });
 };
 </script>
 

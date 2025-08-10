@@ -2,65 +2,65 @@
 
 {% block content %}
 
-<div class="cart-container" style="max-width: 400px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 1.5rem;">
-    <h1 style="text-align:center;">Your Cart</h1>
+<div class="cart-container">
+  <h1 class="cart-title">Your Cart</h1>
+  <div class="cart-items">
+    <!-- PC Builds Section -->
+    {% if builds %}
+        {% for build in builds %}
+            <div class="cart-item cart-build">
+                <h3 class="cart-build-title">{{ build.Name }}</h3>
+                <p class="cart-build-price"><b>Build Price:</b> ₹{{ build.Total_Price }}</p>
+                <form method="post" action="{% url 'remove-build' build.id %}" class="cart-build-remove-form">
+                    {% csrf_token %}
+                    <button type="submit" class="cart-build-remove-btn">Remove Build</button>
+                </form>
+                <ul class="cart-build-details">
+                    <li><b>CPU:</b> {{ build.CPU.name }}</li>
+                    <li><b>Motherboard:</b> {{ build.Motherboard.name }}</li>
+                    <li><b>RAM:</b> {{ build.RAM.name }}</li>
+                    <li><b>GPU:</b> {{ build.GPU.name }}</li>
+                    <li><b>PSU:</b> {{ build.PSU.name }}</li>
+                    <li><b>SSD Storage:</b> {{ build.SSD_Storage.name }}</li>
+                    {% if build.HDD_Storage %}
+                    <li><b>HDD Storage:</b> {{ build.HDD_Storage.name }}</li>
+                    {% endif %}
+                    <li><b>Case:</b> {{ build.Case.name }}</li>
+                    <li><b>CPU Cooler:</b> {{ build.CPU_Cooler.name }}</li>
+                </ul>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-    <!-- Scrollable Cart Items Section -->
-    <div class="cart-items-scroll" style="max-height: 350px; overflow-y: auto; margin-bottom: 1.5rem; border: 1px solid #eee; border-radius: 6px; padding: 1rem;">
-        <!-- PC Builds Section -->
-        {% if builds %}
-            {% for build in builds %}
-                <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
-                    <h3>{{ build.Name }}</h3>
-                    <p><b>Build Price:</b> ₹{{ build.Total_Price }}</p>
-                    <form method="post" action="{% url 'remove-build' build.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit">Remove Build</button>
-                    </form>
-                    <ul style="font-size: 0.95em;">
-                        <li><b>CPU:</b> {{ build.CPU.name }}</li>
-                        <li><b>Motherboard:</b> {{ build.Motherboard.name }}</li>
-                        <li><b>RAM:</b> {{ build.RAM.name }}</li>
-                        <li><b>GPU:</b> {{ build.GPU.name }}</li>
-                        <li><b>PSU:</b> {{ build.PSU.name }}</li>
-                        <li><b>SSD Storage:</b> {{ build.SSD_Storage.name }}</li>
-                        {% if build.HDD_Storage %}
-                        <li><b>HDD Storage:</b> {{ build.HDD_Storage.name }}</li>
-                        {% endif %}
-                        <li><b>Case:</b> {{ build.Case.name }}</li>
-                        <li><b>CPU Cooler:</b> {{ build.CPU_Cooler.name }}</li>
-                    </ul>
-                </div>
-            {% endfor %}
-        {% endif %}
+    <!-- Standalone Components Section -->
+    {% if cart_items %}
+        {% for item in cart_items %}
+            <div class="cart-item cart-component">
+                <h3 class="cart-component-title">{{ item.content_object.name }}</h3>
+                <p class="cart-component-price"><b>Price:</b> ₹{{ item.content_object.price }}</p>
+                <form method="post" action="{% url 'remove-from-cart' item.id %}" class="cart-component-remove-form">
+                    {% csrf_token %}
+                    <button type="submit" class="cart-component-remove-btn">Remove from Cart</button>
+                </form>
+                <p class="cart-component-description">
+                    <b>Description:</b> {{ item.content_object.description }}
+                </p>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-        <!-- Standalone Components Section -->
-        {% if cart_items %}
-            {% for item in cart_items %}
-                <div class="cart-item" style="border-bottom:1px solid #eee; padding-bottom:1rem; margin-bottom:1rem;">
-                    <h3>{{ item.content_object.name }}</h3>
-                    <p><b>Price:</b> ₹{{ item.content_object.price }}</p>
-                    <form method="post" action="{% url 'remove-from-cart' item.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit">Remove from Cart</button>
-                    </form>
-                    <p style="font-size: 0.95em;"><b>Description:</b> {{ item.content_object.description }}</p>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if not builds and not cart_items %}
+        <p class="cart-empty">Your cart is empty.</p>
+    {% endif %}
+  </div>
 
-        {% if not builds and not cart_items %}
-            <p style="text-align:center;">Your cart is empty.</p>
-        {% endif %}
+  <!-- Cart Total and Checkout -->
+  <div class="cart-summary">
+    <div class="cart-total">
+      <b>Total:</b> ₹{{ total }}
     </div>
-
-    <!-- Cart Total and Checkout -->
-    <div class="cart-summary" style="text-align:center;">
-        <div style="font-size:1.2em; margin-bottom:1rem;">
-            <b>Total:</b> ₹{{ total }}
-        </div>
-        <a href="{% url 'checkout' %}" class="btn btn-primary" >Checkout</a>
-    </div>
+    <a href="{% url 'checkout' %}" class="cart-checkout-btn">Checkout</a>
+  </div>
 </div>
 
 {% endblock content %}
