@@ -1,0 +1,78 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="checkout-container" style="max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 2rem;">
+    <h1 style="text-align:center;">Checkout</h1>
+
+    <!-- Price Breakdown -->
+    <div style="margin-bottom: 2rem;">
+        <h3>Price Breakdown</h3>
+        <table style="width:100%; font-size:1em;">
+            <tr>
+                <td>Items Total:</td>
+                <td style="text-align:right;">₹{{ items_total }}</td>
+            </tr>
+            <tr>
+                <td>Delivery Fee:</td>
+                <td style="text-align:right;">₹200</td>
+            </tr>
+            <tr style="font-weight:bold;">
+                <td>Total Payable:</td>
+                <td style="text-align:right;">₹{{ items_total|add:"200" }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Address Selection -->
+    <div style="margin-bottom: 2rem;">
+        <h3>Select Delivery Address</h3>
+        <form method="post">
+            {% csrf_token %}
+            {% if addresses %}
+                <div style="margin-bottom:1rem;">
+                    {% for address in addresses %}
+                        <div style="margin-bottom:0.5rem;">
+                            <label>
+                                <input type="radio" name="address_id" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
+                                {{ address.line1 }}, {{ address.line2 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No saved addresses. Please add one below.</p>
+            {% endif %}
+
+            <!-- Add New Address Toggle -->
+            <button type="button" onclick="toggleForm('add-address-form')" style="margin-bottom:1rem;">Add New Address</button>
+            <div id="add-address-form" style="display:none;">
+                {{ address_form.as_p }}
+                <button type="submit" name="add_address">Save Address</button>
+            </div>
+
+            <hr style="margin:2rem 0;">
+
+            <!-- Payment Options -->
+            <h3>Payment Method</h3>
+            <div style="margin-bottom:1rem;">
+                <label><input type="radio" name="payment_method" value="cod" checked> Cash on Delivery</label><br>
+                <label><input type="radio" name="payment_method" value="upi"> UPI</label><br>
+                <label><input type="radio" name="payment_method" value="card"> Card</label>
+            </div>
+
+            <button type="submit" name="place_order" class="btn btn-primary" style="width:100%;">Place Order</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleForm(id) {
+    var el = document.getElementById(id);
+    if (el.style.display === "none" || el.style.display === "") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
+</script>
+{% endblock content %}

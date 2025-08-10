@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
-from .forms import MyUserCreationForm, PCBuildForm
-from .models import PCBuild
+from .forms import MyUserCreationForm, PCBuildForm, AddressForm, ProfileEditForm
+from .models import PCBuild, Address
 
 
 
@@ -75,7 +77,7 @@ def registerPage(request):
     return render(request, 'core/login_register.html', {'form': form})
 
 
-def editprofile(request):
+def profile(request):
     user = request.user
     if request.method == 'POST':
         form = MyUserCreationForm(request.POST, instance=user)
@@ -90,7 +92,51 @@ def editprofile(request):
 
 
 
+@login_required(login_url='login')
+def editprofile(request):
+    user = request.user
+    addresses = user.addresses.all()
+    profile_form = ProfileEditForm(instance=user)
+    address_form = AddressForm()
+    password_form = PasswordChangeForm(user=user)
 
+    if request.method == 'POST':
+        if 'profile_submit' in request.POST:
+            profile_form = ProfileEditForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Profile updated.")
+                return redirect('profile')
+        elif 'address_submit' in request.POST:
+            address_form = AddressForm(request.POST)
+            if address_form.is_valid():
+                address = address_form.save(commit=False)
+                address.user = user
+                address.save()
+                messages.success(request, "Address added.")
+                return redirect('profile')
+        elif 'password_submit' in request.POST:
+            password_form = PasswordChangeForm(user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password changed successfully.")
+                return redirect('profile')
+
+    context = {
+        'profile_form': profile_form,
+        'address_form': address_form,
+        'addresses': addresses,
+        'password_form': password_form,
+    }
+    return render(request, 'core/profile.html', context)
+
+@login_required(login_url='login')
+def delete_address(request, address_id):
+    address = Address.objects.get(id=address_id, user=request.user)
+    address.delete()
+    messages.success(request, "Address deleted.")
+    return redirect('profile')
 
 
 @login_required(login_url='login')
@@ -187,3 +233,49 @@ def edit_build(request, build_id):
     builds = user.pc_builds.all()
     context = {'form': form, 'edit_mode': True, 'builds': builds, 'edit_build_id': build.id}
     return render(request, 'core/build.html', context)
+
+from django.contrib.auth.decorators import login_required
+from .models import Address
+from .forms import AddressForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+@login_required(login_url='login')
+def checkout(request):
+    user = request.user
+    addresses = user.addresses.all()
+    address_form = AddressForm()
+
+    # Calculate cart total for the user (same as in your cart view)
+    builds = user.pc_builds.all()
+    cart = getattr(user, 'cart', None)
+    cart_items = cart.items.all() if cart else []
+
+    items_total = 0
+    for build in builds:
+        items_total += getattr(build, 'Total_Price', 0)
+    for item in cart_items:
+        items_total += getattr(item.content_object, 'price', 0)
+
+    if request.method == 'POST':
+        if 'add_address' in request.POST:
+            address_form = AddressForm(request.POST)
+            if address_form.is_valid():
+                address = address_form.save(commit=False)
+                address.user = user
+                address.save()
+                messages.success(request, "Address added.")
+                return redirect('checkout')
+        elif 'place_order' in request.POST:
+            address_id = request.POST.get('address_id')
+            payment_method = request.POST.get('payment_method')
+            # Here you would handle order creation, payment, etc.
+            messages.success(request, "Order placed successfully!")
+            return redirect('home')
+
+    context = {
+        'addresses': addresses,
+        'address_form': address_form,
+        'items_total': items_total,
+    }
+    return render(request, 'core/checkout.html', context)

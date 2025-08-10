@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, PCBuild
+from .models import User, PCBuild, Address
 from django import forms
 from django.forms import ModelForm
 from django import forms
@@ -30,3 +30,14 @@ class PCBuildForm(forms.ModelForm):
             'case': forms.Select(attrs={'class': 'form-control'}),
             'cpu_cooler': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ['line1', 'line2', 'city', 'state', 'postal_code', 'country']
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'bio']
