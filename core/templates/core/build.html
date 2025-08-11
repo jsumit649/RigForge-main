@@ -2,51 +2,44 @@
 
 {% block content %}
 
-<h1>{% if edit_mode %}Edit PC Build{% else %}Build PC Template{% endif %}</h1>
-
-<!-- Existing Builds List -->
+<h1 class="build-title">{% if edit_mode %}Edit PC Build{% else %}Build PC Template{% endif %}</h1>
 {% if builds %}
-    <div style="margin-bottom:2rem;">
-        <h2>Your Builds</h2>
-        <ul>
+    <div class="builds-list">
+        <h2 class="builds-list-title">Your Builds</h2>
+        <ul class="builds-list-items">
         {% for build in builds %}
-            <li style="margin-bottom:1rem;">
-                <b>{{ build.Name }}</b> - ₹{{ build.Total_Price }}
-                <form method="post" action="{% url 'remove-build' build.id %}" style="display:inline;">
+            <li class="builds-list-item">
+                <b class="builds-list-name">{{ build.Name }}</b> - ₹{{ build.Total_Price }}
+                <form method="post" action="{% url 'remove-build' build.id %}" class="builds-list-remove-form">
                     {% csrf_token %}
-                    <button type="submit">Remove</button>
+                    <button type="submit" class="builds-list-remove-btn">Remove</button>
                 </form>
-                <a href="{% url 'edit-build' build.id %}" style="margin-left:10px;">
-                    <button type="button" {% if edit_mode and edit_build_id == build.id %}disabled{% endif %}>Edit</button>
+                <a href="{% url 'edit-build' build.id %}" class="builds-list-edit-link">
+                    <button type="button" class="builds-list-edit-btn" {% if edit_mode and edit_build_id == build.id %}disabled{% endif %}>Edit</button>
                 </a>
             </li>
         {% endfor %}
         </ul>
     </div>
 {% endif %}
-
-<!-- Compatibility Issues Alert -->
 {% if compatibility_issues %}
-    <div class="alert alert-danger">
-        <ul>
+    <div class="build-compatibility-alert">
+        <ul class="build-compatibility-list">
         {% for issue in compatibility_issues %}
-            <li>{{ issue }}</li>
+            <li class="build-compatibility-item">{{ issue }}</li>
         {% endfor %}
         </ul>
     </div>
 {% endif %}
-
-<!-- Build Form -->
-
-<p>Create New Build</p>
-<form method="POST" action="">
+<p class="build-form-title">Create New Build</p>
+<form method="POST" action="" class="build-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="build-form-submit-btn">
         {% if edit_mode %}Update PC Build{% else %}Create PC Build{% endif %}
     </button>
     {% if edit_mode %}
-        <a href="{% url 'build' %}" style="margin-left:10px;">Cancel</a>
+        <a href="{% url 'build' %}" class="build-form-cancel-link">Cancel</a>
     {% endif %}
 </form>
 

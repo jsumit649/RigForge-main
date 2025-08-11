@@ -289,6 +289,10 @@ class CheckoutView(LoginRequiredMixin, View):
         builds = user.pc_builds.all()
         cart = getattr(user, 'cart', None)
         cart_items = cart.items.all() if cart else []
+        # Redirect if both builds and cart_items are empty
+        if not builds and not cart_items:
+            messages.info(request, "Your cart is empty.")
+            return redirect('home')
         items_total = sum(getattr(build, 'Total_Price', 0) for build in builds)
         items_total += sum(getattr(item.content_object, 'price', 0) for item in cart_items)
         context = {
@@ -305,6 +309,10 @@ class CheckoutView(LoginRequiredMixin, View):
         builds = user.pc_builds.all()
         cart = getattr(user, 'cart', None)
         cart_items = cart.items.all() if cart else []
+        # Redirect if both builds and cart_items are empty
+        if not builds and not cart_items:
+            messages.info(request, "Your cart is empty.")
+            return redirect('home')
         items_total = sum(getattr(build, 'Total_Price', 0) for build in builds)
         items_total += sum(getattr(item.content_object, 'price', 0) for item in cart_items)
 

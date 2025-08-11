@@ -6,29 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RigForge - Build Your Dream PC</title>
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
-    
-    
-    
 </head>
-<body>
-    {% include 'navbar.html' %}
+<body class="main-body">
+    <div class="main-navbar-container">
+        {% include 'navbar.html' %}
+    </div>
     {% if messages %}
-    <ul class="messages">
+    <ul class="main-messages">
         {% for message in messages %}
-        <li>{{ message }}</li>
+        <li class="main-message-item">{{ message }}</li>
         {% endfor %}
     </ul>
     {% endif %}
-        <div class="content">
-            {% block content %}
-            {% endblock %}
-        </div>
-
-    <footer>
-        <p>&copy; 2025 RigForge. All rights reserved.</p>
+    <div class="main-content-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer class="main-footer">
+        <p class="main-footer-text">&copy; 2025 RigForge. All rights reserved.</p>
     </footer>
-    <script src="{% static 'js/script.js' %}"></script>
-    
-   
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
