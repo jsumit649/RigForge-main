@@ -20,15 +20,15 @@ class PCBuildForm(forms.ModelForm):
         fields = ['Name','CPU', 'GPU', 'Motherboard', 'RAM', 'PSU', 'SSD_Storage', 'HDD_Storage', 'Case', 'CPU_Cooler']
         widgets = {
             'Name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter PC Build Name'}),
-            'cpu': forms.Select(attrs={'class': 'form-control'}),
-            'gpu': forms.Select(attrs={'class': 'form-control'}),
-            'motherboard': forms.Select(attrs={'class': 'form-control'}),
-            'ram': forms.Select(attrs={'class': 'form-control'}),
-            'psu': forms.Select(attrs={'class': 'form-control'}),
-            'ssd_storage': forms.Select(attrs={'class': 'form-control'}),
-            'hdd_storage': forms.Select(attrs={'class': 'form-control'}),
-            'case': forms.Select(attrs={'class': 'form-control'}),
-            'cpu_cooler': forms.Select(attrs={'class': 'form-control'}),
+            'CPU': forms.Select(attrs={'class': 'form-control'}),
+            'GPU': forms.Select(attrs={'class': 'form-control'}),
+            'Motherboard': forms.Select(attrs={'class': 'form-control'}),
+            'RAM': forms.Select(attrs={'class': 'form-control'}),
+            'PSU': forms.Select(attrs={'class': 'form-control'}),
+            'SSD_Storage': forms.Select(attrs={'class': 'form-control'}),
+            'HDD_Storage': forms.Select(attrs={'class': 'form-control'}),
+            'Case': forms.Select(attrs={'class': 'form-control'}),
+            'CPU_Cooler': forms.Select(attrs={'class': 'form-control'}),
         }
 
 

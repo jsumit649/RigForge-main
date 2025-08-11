@@ -4,23 +4,26 @@
 
 <h1 class="build-title">{% if edit_mode %}Edit PC Build{% else %}Build PC Template{% endif %}</h1>
 {% if builds %}
-    <div class="builds-list">
-        <h2 class="builds-list-title">Your Builds</h2>
-        <ul class="builds-list-items">
-        {% for build in builds %}
-            <li class="builds-list-item">
-                <b class="builds-list-name">{{ build.Name }}</b> - ₹{{ build.Total_Price }}
-                <form method="post" action="{% url 'remove-build' build.id %}" class="builds-list-remove-form">
-                    {% csrf_token %}
-                    <button type="submit" class="builds-list-remove-btn">Remove</button>
-                </form>
-                <a href="{% url 'edit-build' build.id %}" class="builds-list-edit-link">
-                    <button type="button" class="builds-list-edit-btn" {% if edit_mode and edit_build_id == build.id %}disabled{% endif %}>Edit</button>
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
+  <section class="builds-section">
+    <h2 class="builds-title">Your Builds</h2>
+    <div class="builds-grid">
+      {% for build in builds %}
+        <article class="build-card">
+          <header class="build-card-header">
+            <div class="build-card-name">{{ build.Name }}</div>
+            <div class="build-card-price">₹{{ build.Total_Price }}</div>
+          </header>
+          <div class="build-card-actions">
+            <a href="{% url 'edit-build' build.id %}" class="build-card-btn build-card-edit" {% if edit_mode and edit_build_id == build.id %}aria-disabled="true"{% endif %}>Edit</a>
+            <form method="post" action="{% url 'remove-build' build.id %}" class="build-card-remove-form">
+              {% csrf_token %}
+              <button type="submit" class="build-card-btn build-card-remove">Remove</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
     </div>
+  </section>
 {% endif %}
 {% if compatibility_issues %}
     <div class="build-compatibility-alert">
@@ -32,15 +35,163 @@
     </div>
 {% endif %}
 <p class="build-form-title">Create New Build</p>
-<form method="POST" action="" class="build-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="build-form-submit-btn">
-        {% if edit_mode %}Update PC Build{% else %}Create PC Build{% endif %}
-    </button>
-    {% if edit_mode %}
-        <a href="{% url 'build' %}" class="build-form-cancel-link">Cancel</a>
-    {% endif %}
-</form>
+<div class="build-form-wrap">
+  <form method="POST" action="" class="build-form" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="build-form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="build-field">
+          <label for="{{ form.Name.id_for_label }}">Name</label>
+          {{ form.Name }}
+          {% if form.Name.errors %}<div class="build-error">{{ form.Name.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# CPU #}
+      <div class="build-field">
+          <div class="component-picker" data-type="cpu" data-field="CPU">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">CPU</span>
+                  <span class="picker-selected" data-placeholder="Select CPU">Select CPU</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.CPU }}</div>
+          </div>
+          {% if form.CPU.errors %}<div class="build-error">{{ form.CPU.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# GPU #}
+      <div class="build-field">
+          <div class="component-picker" data-type="gpu" data-field="GPU">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">Graphics Card</span>
+                  <span class="picker-selected" data-placeholder="Select Graphics Card">Select Graphics Card</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.GPU }}</div>
+          </div>
+          {% if form.GPU.errors %}<div class="build-error">{{ form.GPU.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# Motherboard #}
+      <div class="build-field">
+          <div class="component-picker" data-type="motherboard" data-field="Motherboard">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">Motherboard</span>
+                  <span class="picker-selected" data-placeholder="Select Motherboard">Select Motherboard</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.Motherboard }}</div>
+          </div>
+          {% if form.Motherboard.errors %}<div class="build-error">{{ form.Motherboard.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# RAM #}
+      <div class="build-field">
+          <div class="component-picker" data-type="ram" data-field="RAM">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">RAM</span>
+                  <span class="picker-selected" data-placeholder="Select RAM">Select RAM</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.RAM }}</div>
+          </div>
+          {% if form.RAM.errors %}<div class="build-error">{{ form.RAM.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# PSU #}
+      <div class="build-field">
+          <div class="component-picker" data-type="psu" data-field="PSU">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">PSU</span>
+                  <span class="picker-selected" data-placeholder="Select PSU">Select PSU</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.PSU }}</div>
+          </div>
+          {% if form.PSU.errors %}<div class="build-error">{{ form.PSU.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# SSD #}
+      <div class="build-field">
+          <div class="component-picker" data-type="ssdstorage" data-field="SSD_Storage">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">SSD Storage</span>
+                  <span class="picker-selected" data-placeholder="Select Storage">Select Storage</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.SSD_Storage }}</div>
+          </div>
+          {% if form.SSD_Storage.errors %}<div class="build-error">{{ form.SSD_Storage.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# HDD #}
+      <div class="build-field">
+          <div class="component-picker" data-type="hddstorage" data-field="HDD_Storage">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">HDD Storage</span>
+                  <span class="picker-selected" data-placeholder="Select HDD Storage">Select HDD Storage</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.HDD_Storage }}</div>
+          </div>
+          {% if form.HDD_Storage.errors %}<div class="build-error">{{ form.HDD_Storage.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# Case #}
+      <div class="build-field">
+          <div class="component-picker" data-type="case" data-field="Case">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">Case</span>
+                  <span class="picker-selected" data-placeholder="Select Case">Select Case</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.Case }}</div>
+          </div>
+          {% if form.Case.errors %}<div class="build-error">{{ form.Case.errors|striptags }}</div>{% endif %}
+      </div>
+
+      {# Cooler #}
+      <div class="build-field">
+          <div class="component-picker" data-type="coolers" data-field="CPU_Cooler">
+              <button type="button" class="picker-header">
+                  <span class="picker-title">CPU Cooler</span>
+                  <span class="picker-selected" data-placeholder="Select CPU Cooler">Select CPU Cooler</span>
+                  <span class="picker-price"></span>
+                  <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel"><div class="component-grid"></div></div>
+              <div class="hidden-select">{{ form.CPU_Cooler }}</div>
+          </div>
+          {% if form.CPU_Cooler.errors %}<div class="build-error">{{ form.CPU_Cooler.errors|striptags }}</div>{% endif %}
+      </div>
+
+      <div class="build-actions">
+          <button type="submit" class="build-form-submit-btn">
+              {% if edit_mode %}Update PC Build{% else %}Create PC Build{% endif %}
+          </button>
+          {% if edit_mode %}
+              <a href="{% url 'build' %}" class="build-form-cancel-link">Cancel</a>
+          {% endif %}
+      </div>
+  </form>
+</div>
 
 {% endblock content %}
