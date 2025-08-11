@@ -35,15 +35,25 @@ function fetchComponents(type) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            let html = '<ul>';
+            const container = document.getElementById('components-list');
+            const grid = document.createElement('div');
+            grid.className = 'component-grid';
             data.forEach(item => {
-                html += `<li>
-                    <b>${item.name}</b> - ₹${item.price}
-                    <button onclick="addToCart('${type}', ${item.id})">Add to Cart</button>
-                </li>`;
+                const card = document.createElement('div');
+                card.className = 'component-card';
+                card.innerHTML = `
+                  <div class="card-title">${item.name ?? ''}</div>
+                  <div class="card-desc">${(item.description ?? '').toString().slice(0, 140)}</div>
+                  <div class="card-price">₹${item.price ?? 0}</div>
+                  <button type="button" class="card-pick" data-type="${type}" data-id="${item.id}">Add to Cart</button>
+                `;
+                grid.appendChild(card);
             });
-            html += '</ul>';
-            document.getElementById('components-list').innerHTML = html;
+            container.innerHTML = '';
+            container.appendChild(grid);
+            container.querySelectorAll('.card-pick').forEach(btn => {
+                btn.addEventListener('click', () => addToCart(btn.getAttribute('data-type'), btn.getAttribute('data-id')));
+            });
         });
 }
 
@@ -52,13 +62,13 @@ function addToCart(componentType, objectId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
+            'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/)||[])[1] || '{{ csrf_token }}'
         },
         body: JSON.stringify({component_type: componentType, object_id: objectId})
     })
     .then(response => response.json())
     .then(data => {
-        alert('Added to cart!');
+        if (window.showToast) { window.showToast('Added to cart!', 'success'); } else { alert('Added to cart!'); }
     });
 }
 

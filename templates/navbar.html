@@ -6,6 +6,11 @@
             <img src="{% static 'images/logo.png' %}" alt="RigForge" class="navbar-logo-img">
             <span class="navbar-logo-text"></span>
         </a>
+        <button class="navbar-burger" id="navbar-burger" aria-label="Toggle navigation" aria-expanded="false">
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+        </button>
         <nav class="navbar-menu">
             <div class="navbar-links">
                 <a href="{% url 'home' %}" class="navbar-link">Home</a>
@@ -14,27 +19,13 @@
             </div>
             <div class="navbar-user-section">
                 {% if request.user.is_authenticated %}
-                <div class="navbar-user">
-                    <div class="navbar-user-info">
-                        <div class="navbar-avatar">
-                            <img src="{% static 'images/avatar.svg' %}" alt="User Avatar" class="navbar-avatar-img"/>
-                        </div>
-                        <span class="navbar-username">
-                            <a href="{% url 'profile' %}">{{request.user.username}}</a>
-                        </span>
-                    </div>
-                    <a href="{% url 'logout' %}" class="navbar-logout-btn" title="Logout">
-                        <svg class="navbar-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16,17 21,12 16,7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                    </a>
+                <div class="navbar-auth-buttons">
+                    <a href="{% url 'profile' %}" class="navbar-link">{{request.user.username}}</a>
+                    <a href="{% url 'logout' %}" class="navbar-link" title="Logout">Logout</a>
                 </div>
                 {% else %}
                 <div class="navbar-auth-buttons">
                     <a href="{% url 'login' %}" class="navbar-login-btn">
-                        <img src="{% static 'images/avatar.svg' %}" alt="Login" class="navbar-login-img"/>
                         <span class="navbar-login-text">Login</span>
                     </a>
                 </div>

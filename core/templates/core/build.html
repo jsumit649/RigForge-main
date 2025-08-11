@@ -14,10 +14,10 @@
             <div class="build-card-price">₹{{ build.Total_Price }}</div>
           </header>
           <div class="build-card-actions">
-            <a href="{% url 'edit-build' build.id %}" class="build-card-btn build-card-edit" {% if edit_mode and edit_build_id == build.id %}aria-disabled="true"{% endif %}>Edit</a>
+            <a href="{% url 'edit-build' build.id %}" class="build-card-btn build-card-edit btn btn-primary" {% if edit_mode and edit_build_id == build.id %}aria-disabled="true"{% endif %}>Edit</a>
             <form method="post" action="{% url 'remove-build' build.id %}" class="build-card-remove-form">
               {% csrf_token %}
-              <button type="submit" class="build-card-btn build-card-remove">Remove</button>
+                    <button type="submit" class="build-card-btn build-card-remove btn btn-danger">Remove</button>
             </form>
           </div>
         </article>

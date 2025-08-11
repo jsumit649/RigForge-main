@@ -9,25 +9,31 @@
     {% if builds %}
         {% for build in builds %}
             <div class="cart-item cart-build">
-                <h3 class="cart-build-title">{{ build.Name }}</h3>
-                <p class="cart-build-price"><b>Build Price:</b> ₹{{ build.Total_Price }}</p>
-                <form method="post" action="{% url 'remove-build' build.id %}" class="cart-build-remove-form">
+              <div class="cart-card">
+                <div class="cart-card-header">
+                  <h3 class="cart-build-title">{{ build.Name }}</h3>
+                  <div class="cart-build-price">₹{{ build.Total_Price }}</div>
+                </div>
+                <div class="cart-card-body">
+                  <ul class="cart-specs">
+                    <li><span>CPU</span><b>{{ build.CPU.name }}</b></li>
+                    <li><span>Motherboard</span><b>{{ build.Motherboard.name }}</b></li>
+                    <li><span>RAM</span><b>{{ build.RAM.name }}</b></li>
+                    {% if build.GPU %}<li><span>GPU</span><b>{{ build.GPU.name }}</b></li>{% endif %}
+                    <li><span>PSU</span><b>{{ build.PSU.name }}</b></li>
+                    <li><span>SSD</span><b>{{ build.SSD_Storage.name }}</b></li>
+                    {% if build.HDD_Storage %}<li><span>HDD</span><b>{{ build.HDD_Storage.name }}</b></li>{% endif %}
+                    <li><span>Case</span><b>{{ build.Case.name }}</b></li>
+                    <li><span>Cooler</span><b>{{ build.CPU_Cooler.name }}</b></li>
+                  </ul>
+                </div>
+                <div class="cart-card-actions">
+                  <form method="post" action="{% url 'remove-build' build.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="cart-build-remove-btn">Remove Build</button>
-                </form>
-                <ul class="cart-build-details">
-                    <li><b>CPU:</b> {{ build.CPU.name }}</li>
-                    <li><b>Motherboard:</b> {{ build.Motherboard.name }}</li>
-                    <li><b>RAM:</b> {{ build.RAM.name }}</li>
-                    <li><b>GPU:</b> {{ build.GPU.name }}</li>
-                    <li><b>PSU:</b> {{ build.PSU.name }}</li>
-                    <li><b>SSD Storage:</b> {{ build.SSD_Storage.name }}</li>
-                    {% if build.HDD_Storage %}
-                    <li><b>HDD Storage:</b> {{ build.HDD_Storage.name }}</li>
-                    {% endif %}
-                    <li><b>Case:</b> {{ build.Case.name }}</li>
-                    <li><b>CPU Cooler:</b> {{ build.CPU_Cooler.name }}</li>
-                </ul>
+                    <button type="submit" class="cart-btn cart-btn-danger btn btn-danger">Remove Build</button>
+                  </form>
+                </div>
+              </div>
             </div>
         {% endfor %}
     {% endif %}
@@ -36,15 +42,21 @@
     {% if cart_items %}
         {% for item in cart_items %}
             <div class="cart-item cart-component">
-                <h3 class="cart-component-title">{{ item.content_object.name }}</h3>
-                <p class="cart-component-price"><b>Price:</b> ₹{{ item.content_object.price }}</p>
-                <form method="post" action="{% url 'remove-from-cart' item.id %}" class="cart-component-remove-form">
+              <div class="cart-card">
+                <div class="cart-card-header">
+                  <h3 class="cart-component-title">{{ item.content_object.name }}</h3>
+                  <div class="cart-component-price">₹{{ item.content_object.price }}</div>
+                </div>
+                <div class="cart-card-body">
+                  <p class="cart-component-description">{{ item.content_object.description }}</p>
+                </div>
+                <div class="cart-card-actions">
+                  <form method="post" action="{% url 'remove-from-cart' item.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="cart-component-remove-btn">Remove from Cart</button>
-                </form>
-                <p class="cart-component-description">
-                    <b>Description:</b> {{ item.content_object.description }}
-                </p>
+                    <button type="submit" class="cart-btn cart-btn-danger btn btn-danger">Remove</button>
+                  </form>
+                </div>
+              </div>
             </div>
         {% endfor %}
     {% endif %}

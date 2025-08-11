@@ -21,34 +21,56 @@
         </table>
     </div>
     <div class="checkout-address-section">
-        <h3 class="checkout-address-title">Select Delivery Address</h3>
         <form method="post" class="checkout-form">
             {% csrf_token %}
+            <div class="checkout-address-header">
+              <h3 class="checkout-address-title">Select Delivery Address</h3>
+              <button type="button" class="checkout-add-address-btn" data-toggle="add-address-form">Add New Address</button>
+            </div>
             {% if addresses %}
-                <div class="checkout-address-list">
+              <div class="list-picker" data-field="address_id">
+                <button type="button" class="picker-header">
+                  <span class="picker-title">Address</span>
+                  <span class="picker-selected" data-placeholder="Select Address">Select Address</span>
+                  <span class="picker-caret">▾</span>
+                </button>
+                <div class="picker-panel">
+                  <div class="component-grid">
                     {% for address in addresses %}
-                        <div class="checkout-address-item">
-                            <label>
-                                <input type="radio" name="address_id" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
-                                {{ address.line1 }}, {{ address.line2 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}
-                            </label>
-                        </div>
+                      <div class="component-card">
+                        <div class="card-desc">{{ address.line1 }}, {{ address.line2 }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</div>
+                        <button type="button" class="card-pick list-pick" data-id="{{ address.id }}">Select</button>
+                      </div>
                     {% endfor %}
+                  </div>
                 </div>
+                <input type="hidden" name="address_id" value="{% if addresses %}{{ addresses.0.id }}{% endif %}">
+              </div>
             {% else %}
-                <p class="checkout-no-address">No saved addresses. Please add one below.</p>
+              <p class="checkout-no-address">No saved addresses. Please add one below.</p>
             {% endif %}
-            <button type="button" class="checkout-add-address-btn" data-toggle="add-address-form">Add New Address</button>
             <div id="add-address-form" class="checkout-add-address-form">
-                {{ address_form.as_p }}
+                {% for field in address_form %}
+                    {{ field }}
+                {% endfor %}
                 <button type="submit" name="add_address" class="checkout-save-address-btn">Save Address</button>
             </div>
             <hr class="checkout-divider">
             <h3 class="checkout-payment-title">Payment Method</h3>
-            <div class="checkout-payment-options">
-                <label><input type="radio" name="payment_method" value="cod" checked> Cash on Delivery</label><br>
-                <label><input type="radio" name="payment_method" value="upi"> UPI</label><br>
-                <label><input type="radio" name="payment_method" value="card"> Card</label>
+            <div class="list-picker" data-field="payment_method">
+              <button type="button" class="picker-header">
+                <span class="picker-title">Payment</span>
+                <span class="picker-selected" data-placeholder="Select Payment Method">Select Payment Method</span>
+                <span class="picker-caret">▾</span>
+              </button>
+              <div class="picker-panel">
+                <div class="component-grid">
+                  <div class="component-card"><div class="card-title">Cash on Delivery</div><button type="button" class="card-pick list-pick" data-id="cod">Select</button></div>
+                  <div class="component-card"><div class="card-title">UPI</div><button type="button" class="card-pick list-pick" data-id="upi">Select</button></div>
+                  <div class="component-card"><div class="card-title">Card</div><button type="button" class="card-pick list-pick" data-id="card">Select</button></div>
+                </div>
+              </div>
+              <input type="hidden" name="payment_method" value="cod">
             </div>
             <button type="submit" name="place_order" class="checkout-place-order-btn">Place Order</button>
         </form>

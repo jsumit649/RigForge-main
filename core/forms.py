@@ -19,7 +19,7 @@ class PCBuildForm(forms.ModelForm):
         model = PCBuild
         fields = ['Name','CPU', 'GPU', 'Motherboard', 'RAM', 'PSU', 'SSD_Storage', 'HDD_Storage', 'Case', 'CPU_Cooler']
         widgets = {
-            'Name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter PC Build Name'}),
+            'Name': forms.TextInput(attrs={'class': 'form-control address-input', 'placeholder': 'Enter PC Build Name'}),
             'CPU': forms.Select(attrs={'class': 'form-control'}),
             'GPU': forms.Select(attrs={'class': 'form-control'}),
             'Motherboard': forms.Select(attrs={'class': 'form-control'}),
@@ -36,8 +36,55 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = ['line1', 'line2', 'city', 'state', 'postal_code', 'country']
+        widgets = {
+            'line1': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'Line 1',
+                'autocomplete': 'address-line1'
+            }),
+            'line2': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'Line 2 (Optional)',
+                'autocomplete': 'address-line2'
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'City',
+                'autocomplete': 'address-level2'
+            }),
+            'state': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'State/Province',
+                'autocomplete': 'address-level1'
+            }),
+            'postal_code': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'Postal Code',
+                'autocomplete': 'postal-code'
+            }),
+            'country': forms.TextInput(attrs={
+                'class': 'address-input',
+                'placeholder': 'Country',
+                'autocomplete': 'country-name'
+            }),
+        }
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['name', 'email', 'bio']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Full Name'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Email Address'
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Tell us about yourself...',
+                'rows': 3
+            }),
+        }

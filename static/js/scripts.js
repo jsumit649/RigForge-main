@@ -2,7 +2,56 @@
 // No external libraries; uses existing API endpoints defined in core/urls.py
 
 (function () {
+  // Toggle helpers for profile page
+  document.addEventListener('click', (e) => {
+    const toggleTarget = e.target && e.target.getAttribute('data-toggle');
+    if (!toggleTarget) return;
+    const el = document.getElementById(toggleTarget);
+    if (!el) return;
+    const isVisible = getComputedStyle(el).display !== 'none';
+    el.style.display = isVisible ? 'none' : 'block';
+  });
+
   const pickerSelector = '.component-picker';
+  const listPickerSelector = '.list-picker';
+
+  // Auto-dismiss toasts after 10 seconds (CSS handles animation too)
+  function setupToasts() {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toasts = Array.from(container.querySelectorAll('.toast'));
+    // Remove after 10s to avoid tabbing focus or screen-reader clutter
+    toasts.forEach((t) => {
+      const timer = setTimeout(() => t.remove(), 10000);
+      const closeBtn = t.querySelector('.toast-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          clearTimeout(timer);
+          t.remove();
+        });
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupToasts, { once: true });
+  } else { setupToasts(); }
+
+  // Small helper to show toast programmatically
+  window.showToast = function (text, tag = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tag}`;
+    toast.innerHTML = `<span class="toast-text">${text}</span><button class="toast-close" type="button" aria-label="Close notification">&times;</button>`;
+    container.appendChild(toast);
+    // Trigger auto-remove and close behavior
+    const timer = setTimeout(() => toast.remove(), 10000);
+    toast.querySelector('.toast-close').addEventListener('click', () => { clearTimeout(timer); toast.remove(); });
+    // Force reflow to ensure CSS animations apply on dynamically added toasts
+    // eslint-disable-next-line no-unused-expressions
+    toast.offsetHeight;
+    toast.style.animation = 'toast-in 300ms ease forwards, toast-out 300ms ease 9.7s forwards';
+  };
 
   function moneyINR(value) {
     try {
@@ -43,7 +92,7 @@
       <div class="card-title">${item.name ?? ''}</div>
       <div class="card-desc">${(item.description ?? '').toString().slice(0, 120)}</div>
       <div class="card-price">${moneyINR(item.price ?? 0)}</div>
-      <button type="button" class="card-pick">Select</button>
+      <button type="button" class="card-pick btn btn-primary">Select</button>
     `;
     return container;
   }
@@ -80,9 +129,31 @@
 
     items.forEach((item) => {
       const card = renderCard(item);
-      card.querySelector('.card-pick').addEventListener('click', () => {
-        syncHiddenSelect(pickerEl, item.id, item.name, item.price);
-        pickerEl.classList.remove('open');
+      const btn = card.querySelector('.card-pick');
+      btn.addEventListener('click', () => {
+        const hiddenSelect = pickerEl.querySelector('.hidden-select select');
+        const alreadySelected = hiddenSelect && hiddenSelect.value == item.id;
+        if (alreadySelected) {
+          // Deselect
+          hiddenSelect.value = '';
+          hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          const selectedEl = pickerEl.querySelector('.picker-selected');
+          const priceEl = pickerEl.querySelector('.picker-price');
+          if (selectedEl) selectedEl.textContent = selectedEl.getAttribute('data-placeholder') || '';
+          if (priceEl) priceEl.textContent = '';
+          btn.textContent = 'Select';
+          btn.classList.remove('btn-danger');
+          btn.classList.add('btn-primary');
+          if (window.showToast) window.showToast('Component deselected', 'warning');
+        } else {
+          // Select
+          syncHiddenSelect(pickerEl, item.id, item.name, item.price);
+          btn.textContent = 'Deselect';
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-danger');
+          pickerEl.classList.remove('open');
+          if (window.showToast) window.showToast('Component selected', 'success');
+        }
       });
       grid.appendChild(card);
     });
@@ -106,6 +177,26 @@
         }
       }
     });
+
+    // Checkout-like list pickers
+    document.querySelectorAll(listPickerSelector).forEach((picker) => {
+      const header = picker.querySelector('.picker-header');
+      const panel = picker.querySelector('.picker-panel');
+      const hidden = picker.querySelector('input[type="hidden"]');
+      if (header) header.addEventListener('click', () => {
+        picker.classList.toggle('open');
+      });
+      picker.querySelectorAll('.list-pick').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const selected = picker.querySelector('.picker-selected');
+          hidden.value = id;
+          if (selected) selected.textContent = btn.parentElement.querySelector('.card-title, .card-desc')?.textContent?.trim() || id;
+          picker.classList.remove('open');
+          if (window.showToast) window.showToast('Selected', 'success');
+        });
+      });
+    });
   }
 
   // Click outside to close any open picker
@@ -120,5 +211,19 @@
   } else {
     attachPickers();
   }
+
+  // Mobile navbar burger toggle
+  function setupBurger() {
+    const burger = document.getElementById('navbar-burger');
+    const menu = document.querySelector('.navbar-menu');
+    if (!burger || !menu) return;
+    burger.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupBurger, { once: true });
+  } else { setupBurger(); }
 })();
 

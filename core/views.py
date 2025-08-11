@@ -226,7 +226,7 @@ class RemoveBuildView(LoginRequiredMixin, View):
             messages.success(request, 'Build deleted successfully!')
         except PCBuild.DoesNotExist:
             messages.error(request, 'Build not found.')
-        return redirect('cart')
+        return redirect('build')
 
 
 class RemoveFromCartView(LoginRequiredMixin, View):

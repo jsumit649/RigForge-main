@@ -5,19 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RigForge - Build Your Dream PC</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
 </head>
 <body class="main-body">
     <div class="main-navbar-container">
         {% include 'navbar.html' %}
     </div>
-    {% if messages %}
-    <ul class="main-messages">
-        {% for message in messages %}
-        <li class="main-message-item">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <div class="toast-container" id="toast-container" role="region" aria-live="polite" aria-atomic="true">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="toast toast-{{ message.tags|default:'info' }}">
+                <span class="toast-text">{{ message }}</span>
+                <button class="toast-close" aria-label="Close notification" type="button">&times;</button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div class="main-content-container">
         {% block content %}
         {% endblock %}
